@@ -20,8 +20,12 @@ def register():
     data = request.get_json()
     hashed_password = generate_password_hash(data['password'], method='sha256')
     new_user = User(username=data['username'], password=hashed_password)
-    db.session.add(new_user)
-    db.session.commit()
+
+    # Use application context to perform database operations
+    with app.app_context():
+        db.session.add(new_user)
+        db.session.commit()
+
     return jsonify({'message': 'Registered successfully'}), 201
 
 @app.route('/login', methods=['POST'])
@@ -34,6 +38,9 @@ def login():
     return jsonify({'message': 'Login failed'}), 401
 
 if __name__ == '__main__':
-    db.create_all()
+    # Ensure tables are created within the application context
+    with app.app_context():
+        db.create_all()
+
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
