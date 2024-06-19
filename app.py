@@ -7,7 +7,7 @@ import datetime
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://giftedtech:ZMIkfrL3rHsvmfyGboVXKkeyoM0FPl6z@dpg-cpp83jlds78s73e39m10-a.oregon-postgres.render.com/giftedtech'
-app.config['SECRET_KEY'] = 'your_secret_key'
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'defaultsecretkey')  # Use an environment variable
 db = SQLAlchemy(app)
 
 class User(db.Model):
